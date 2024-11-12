@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Home</title>
+</head>
+<body>
+    <h1>Welcome to the Chat App</h1>
+    
+    <!-- Button to create a new room -->
+    <h3>Create a New Room</h3>
+    <form action="/create_room" method="POST">
+        <input type="text" name="room_id" placeholder="Enter Room ID" required>
+        <button type="submit">Create Room</button>
+    </form>
+    
+    <!-- Button to join an existing room -->
+    <h3>Join an Existing Room</h3>
+    <form action="/join_room" method="POST">
+        <input type="text" name="room_id" placeholder="Enter Room ID" required>
+        <button type="submit">Join Room</button>
+    </form>
+
+</body>
+</html>
