@@ -1,24 +1,81 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+        }
+        h1 {
+            color: #4caf50;
+            margin-bottom: 1rem;
+        }
+        h3 {
+            color: #555;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        form {
+            margin-bottom: 1.5rem;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Chat App</h1>
-    
-    <!-- Button to create a new room -->
-    <h3>Create a New Room</h3>
-    <form action="/create_room" method="POST">
-        <input type="text" name="room_id" placeholder="Enter Room ID" required>
-        <button type="submit">Create Room</button>
-    </form>
-    
-    <!-- Button to join an existing room -->
-    <h3>Join an Existing Room</h3>
-    <form action="/join_room" method="POST">
-        <input type="text" name="room_id" placeholder="Enter Room ID" required>
-        <button type="submit">Join Room</button>
-    </form>
-
+    <div class="container">
+        <h1>Welcome to the Chat App</h1>
+        
+        <!-- Section to create a new room -->
+        <h3>Create a New Room</h3>
+        <form action="/create_room" method="POST">
+            <input type="text" name="room_id" placeholder="Enter Room ID" required>
+            <button type="submit">Create Room</button>
+        </form>
+        
+        <!-- Section to join an existing room -->
+        <h3>Join an Existing Room</h3>
+        <form action="/join_room" method="POST">
+            <input type="text" name="room_id" placeholder="Enter Room ID" required>
+            <button type="submit">Join Room</button>
+        </form>
+    </div>
 </body>
 </html>
