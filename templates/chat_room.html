@@ -1,14 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Room</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        #messages {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            background-color: #fff;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        #message_input {
+            width: 80%;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        .message p {
+            margin: 0;
+            padding: 0;
+        }
+        .username {
+            font-weight: bold;
+            color: #007BFF;
+        }
+        .leave-btn {
+            background-color: #DC3545;
+        }
+        .leave-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
 <body>
     <h1>Room ID: {{ room_id }}</h1>
-    <button onclick="leaveRoom()">Leave Room</button>
+    <button class="leave-btn" onclick="leaveRoom()">Leave Room</button>
 
     <!-- Message display area -->
-    <div id="messages" style="border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto;">
+    <div id="messages">
         <p><em>Messages will appear here...</em></p>
     </div>
 
@@ -29,13 +87,14 @@
         // Function to display a message in the chat area
         function displayMessage(data) {
             const messagesDiv = document.getElementById('messages');
-            const messageElement = document.createElement('p');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
             
             if (data.username && data.message) {
-                messageElement.textContent = `${data.username}: ${data.message}`;
+                messageElement.innerHTML = `<span class="username">${data.username}:</span> ${data.message}`;
             } else if (typeof data === "string") {
                 // Handle server broadcasted string messages (e.g., join/leave notifications)
-                messageElement.textContent = data;
+                messageElement.innerHTML = `<em>${data}</em>`;
             } else {
                 // Ignore invalid or undefined messages
                 return;
@@ -48,10 +107,8 @@
         // Function to send a message
         function sendMessage() {
             const message = document.getElementById('message_input').value;
-            
-            // Display your own message immediately
-            displayMessage({ username: username, message: message });
-            
+            if (!message.trim()) return; // Don't send empty messages
+
             // Send the message to the server
             socket.emit('message', { room: room_id, message: message, username: username });
             
