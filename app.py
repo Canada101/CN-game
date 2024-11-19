@@ -41,10 +41,12 @@ def handle_leave(data):
 @socketio.on('message')
 def handle_message(data):
     room = data['room']
-    username = data['username']
-    message = data['message']
-    # Broadcast the message to everyone in the room
-    send({'username': username, 'message': message}, to=room)
+    username = data.get('username')  # Use .get() to avoid KeyError if the key is missing
+    message = data.get('message')
+    
+    if username and message:
+        # Only send the message if both username and message are present
+        send({'username': username, 'message': message}, to=room)
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, allow_unsafe_werkzeug=True)
