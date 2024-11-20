@@ -16,6 +16,17 @@
     <input type="text" id="message_input" placeholder="Type a message...">
     <button onclick="sendMessage()">Send</button>
 
+    <!-- File sharing section -->
+    <h3>Share a File</h3>
+    <input type="file" id="file_input">
+    <button onclick="sendFile()">Send File</button>
+
+    <!-- Section to display shared files -->
+    <div id="shared_files" style="margin-top: 20px;">
+        <h3>Shared Files</h3>
+        <ul id="file_list" style="list-style-type: none; padding: 0;"></ul>
+    </div>
+
     <!-- Include Socket.IO library -->
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script>
@@ -63,6 +74,39 @@
         function leaveRoom() {
             socket.emit('leave', { room: room_id, username: username });
             window.location.href = '/';
+        }
+
+        // Function to send a file
+        function sendFile() {
+            const fileInput = document.getElementById('file_input');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('room_id', room_id);
+
+                // Send file to the server via AJAX
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.file_url) {
+                        const fileList = document.getElementById('file_list');
+                        const fileItem = document.createElement('li');
+                        fileItem.innerHTML = `<a href="${data.file_url}" target="_blank">${file.name}</a>`;
+                        fileList.appendChild(fileItem);
+
+                        // Notify users in the chat
+                        displayMessage({ username: username, message: `Uploaded file at "${data.file_url}"` });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error uploading file:', error);
+                });
+            }
         }
 
         // Listen for messages from the server and display them
