@@ -1,7 +1,7 @@
 import os
 import shutil
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
-from flask_socketio import SocketIO, join_room, leave_room, send
+from flask_socketio import SocketIO, join_room, leave_room, send, emit
 import atexit
 
 app = Flask(__name__)
@@ -39,7 +39,6 @@ def join_existing_room():
 def room(room_id):
     return render_template('chat_room.html', room_id=room_id)
 
-# New route to handle file uploads
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
@@ -54,9 +53,16 @@ def upload_file():
 
         # Return the file URL so it can be shared in the chat
         file_url = url_for('uploaded_file', filename=filename, _external=True)
+        
+        # Notify the room about the new file
+        socketio.emit('file_uploaded', {
+            'username': request.form.get('username', 'Anonymous'),
+            'file_url': file_url,
+            'filename': filename
+        }, to=room_id)
+
         return jsonify({'file_url': file_url})
 
-# Route to serve uploaded files
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)

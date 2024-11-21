@@ -142,6 +142,7 @@
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('room_id', room_id);
+                formData.append('username', username);
 
                 // Send file to the server via AJAX
                 fetch('/upload', {
@@ -155,9 +156,6 @@
                         const fileItem = document.createElement('li');
                         fileItem.innerHTML = `<a href="${data.file_url}" target="_blank">${file.name}</a>`;
                         fileList.appendChild(fileItem);
-
-                        // Notify users in the chat
-                        displayMessage({ username: username, message: `Uploaded file at "${data.file_url}"` });
                     }
                 })
                 .catch(error => {
@@ -169,6 +167,17 @@
         // Listen for messages from the server and display them
         socket.on('message', function(data) {
             displayMessage(data);
+        });
+
+        // Listen for file upload notifications from the server
+        socket.on('file_uploaded', function(data) {
+            const fileList = document.getElementById('file_list');
+            const fileItem = document.createElement('li');
+            fileItem.innerHTML = `<a href="${data.file_url}" target="_blank">${data.filename}</a>`;
+            fileList.appendChild(fileItem);
+
+            // Notify users in the chat
+            displayMessage({ username: data.username, message: `Shared a file: <a href="${data.file_url}" target="_blank">${data.filename}</a>` });
         });
     </script>
 </body>
